@@ -42,4 +42,16 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
+
 # free_market_front
+
+環境構築（インストールしたライブラリのコマンド）
+npm install @material-ui/icons
+npm install @material-ui/lab
+npm install @material-ui/core
+npm install formik --save
+npm install formik-material-ui
+npm install yup @types/yup
+npm install @types/react-modal
+npm install react-modal
+npm install axios
