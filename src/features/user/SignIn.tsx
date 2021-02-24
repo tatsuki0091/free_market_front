@@ -1,11 +1,20 @@
 import React from "react";
 import Modal from "react-modal";
 import { Formik } from "formik";
-import { setOpenSignIn, selectOpenSignIn, resetOpenSignIn } from "./authSlice";
+import {
+  selectOpenSignIn,
+  fetchCredStart,
+  fetchCredEnd,
+  fetchAsyncLogin,
+  resetOpenSignIn,
+  resetOpenSignUp,
+  fetchAsyncGetMyProf,
+  setOpenSignUp,
+} from "./authSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { Button, TextField } from "@material-ui/core";
 import { AppDispatch } from "../../app/store";
-import authStyle from "./auth.module.css";
+import authStyle from "./Auth.module.css";
 // バリデーションのためのライブラリ
 import * as Yup from "yup";
 
@@ -29,6 +38,8 @@ const SignIn: React.FC = () => {
   // Modalのステート（初期値はfalse)
   const openSignIn = useSelector(selectOpenSignIn);
   const dispatch: AppDispatch = useDispatch();
+  // フロントエンド側のURL
+  const frontUrl = process.env.REACT_FRONT_DEV_API_URL;
   return (
     <>
       <Modal isOpen={openSignIn} style={customStyles}>
@@ -36,7 +47,18 @@ const SignIn: React.FC = () => {
         <Formik
           initialErrors={{ email: "required" }}
           initialValues={{ email: "", password: "" }}
-          onSubmit={(values) => console.log(values)}
+          onSubmit={async (values) => {
+            await dispatch(fetchCredStart());
+            console.log(values);
+            const result = await dispatch(fetchAsyncLogin(values));
+            if (fetchAsyncLogin.fulfilled.match(result)) {
+              await dispatch(fetchAsyncGetMyProf());
+            }
+            await dispatch(fetchCredEnd());
+            await dispatch(resetOpenSignIn());
+            // トップページにリダイレクト
+            await document.location.assign(`${frontUrl}`);
+          }}
           validationSchema={Yup.object().shape({
             email: Yup.string()
               .email("email format is wrong")
@@ -51,51 +73,55 @@ const SignIn: React.FC = () => {
             touched,
             errors,
           }) => (
-            <form onSubmit={handleSubmit}>
-              <div>
-                <label>email</label>
+            <>
+              <form onSubmit={handleSubmit}>
+                <div>
+                  <label>email</label>
+                  <br />
+                  <TextField
+                    className={authStyle.form}
+                    placeholder="email"
+                    type="text"
+                    name="email"
+                    onBlur={handleBlur}
+                    value={values.email}
+                    onChange={handleChange}
+                  />
+                </div>
                 <br />
-                <TextField
-                  className={authStyle.form}
-                  placeholder="email"
-                  type="text"
-                  name="email"
-                  onBlur={handleBlur}
-                  value={values.email}
-                  onChange={handleChange}
-                />
-              </div>
-              <br />
-              {touched.email && errors.email ? (
-                <div className={authStyle.validateFont}>{errors.email}</div>
-              ) : null}
-              <div>
-                <label>password</label>
+                {touched.email && errors.email ? (
+                  <div className={authStyle.validateFont}>{errors.email}</div>
+                ) : null}
+                <div>
+                  <label>password</label>
+                  <br />
+                  <TextField
+                    className={authStyle.form}
+                    placeholder="password"
+                    type="password"
+                    name="password"
+                    onBlur={handleBlur}
+                    value={values.password}
+                    onChange={handleChange}
+                  />
+                </div>
                 <br />
-                <TextField
+                {touched.password && errors.password ? (
+                  <div className={authStyle.validateFont}>
+                    {errors.password}
+                  </div>
+                ) : null}
+                <br />
+                <Button
                   className={authStyle.form}
-                  placeholder="password"
-                  type="password"
-                  name="password"
-                  onBlur={handleBlur}
-                  value={values.password}
-                  onChange={handleChange}
-                />
-              </div>
-              <br />
-              {touched.password && errors.password ? (
-                <div className={authStyle.validateFont}>{errors.password}</div>
-              ) : null}
-              <br />
-              <Button
-                className={authStyle.form}
-                type="submit"
-                variant="contained"
-                color="default"
-              >
-                Login
-              </Button>
-            </form>
+                  type="submit"
+                  variant="contained"
+                  color="default"
+                >
+                  Login
+                </Button>
+              </form>
+            </>
           )}
         />
 
@@ -110,6 +136,19 @@ const SignIn: React.FC = () => {
         >
           Close
         </Button>
+
+        <br />
+        <br />
+        <div className={authStyle.auth_text}>
+          <span
+            onClick={async () => {
+              await dispatch(setOpenSignUp());
+              await dispatch(resetOpenSignIn());
+            }}
+          >
+            You don't have an account ?
+          </span>
+        </div>
       </Modal>
     </>
   );

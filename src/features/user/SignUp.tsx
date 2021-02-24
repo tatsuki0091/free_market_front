@@ -1,11 +1,24 @@
 import React from "react";
-import { setOpenSignUp, selectOpenSignUp, resetOpenSignUp } from "./authSlice";
+import {
+  setOpenSignIn,
+  selectOpenSignIn,
+  resetOpenSignIn,
+  resetOpenSignUp,
+  selectOpenSignUp,
+  fetchCredStart,
+  fetchCredEnd,
+  fetchAsyncGetMyProf,
+  setOpenSignUp,
+  fetchAsyncLogin,
+  fetchAsyncRegister,
+  fetchAsyncCreateProf,
+} from "./authSlice";
 import Modal from "react-modal";
 import { Formik } from "formik";
 import { useSelector, useDispatch } from "react-redux";
 import { Button, TextField } from "@material-ui/core";
 import { AppDispatch } from "../../app/store";
-import authStyle from "./auth.module.css";
+import authStyle from "./Auth.module.css";
 // バリデーションのためのライブラリ
 import * as Yup from "yup";
 
@@ -28,6 +41,8 @@ const SignUp: React.FC = () => {
   // Modalのステート（初期値はfalse)
   const openSignUp = useSelector(selectOpenSignUp);
   const dispatch: AppDispatch = useDispatch();
+  // フロントエンド側のURL
+  const frontUrl = process.env.REACT_FRONT_DEV_API_URL;
   return (
     <>
       <Modal isOpen={openSignUp} style={customStyles}>
@@ -35,7 +50,19 @@ const SignUp: React.FC = () => {
         <Formik
           initialErrors={{ email: "required" }}
           initialValues={{ email: "", password: "" }}
-          onSubmit={(values) => console.log(values)}
+          onSubmit={async (values) => {
+            await dispatch(fetchCredStart());
+            const resultReg = await dispatch(fetchAsyncRegister(values));
+            if (fetchAsyncRegister.fulfilled.match(resultReg)) {
+              await dispatch(fetchAsyncLogin(values));
+              await dispatch(fetchAsyncCreateProf({ nickName: "anonymous" }));
+              await dispatch(fetchAsyncGetMyProf());
+            }
+            await dispatch(fetchCredEnd());
+            await dispatch(resetOpenSignUp());
+            // トップページにリダイレクト
+            await document.location.assign(`${frontUrl}`);
+          }}
           validationSchema={Yup.object().shape({
             email: Yup.string()
               .email("email format is wrong")
@@ -109,6 +136,19 @@ const SignUp: React.FC = () => {
         >
           Close
         </Button>
+        <br />
+        <br />
+        <div className={authStyle.auth_text}>
+          <span
+            className={authStyle.auth_text}
+            onClick={async () => {
+              await dispatch(setOpenSignIn());
+              await dispatch(resetOpenSignUp());
+            }}
+          >
+            You already have an account ?
+          </span>
+        </div>
       </Modal>
     </>
   );

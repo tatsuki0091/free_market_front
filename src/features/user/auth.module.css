@@ -25,3 +25,25 @@
   align-items: center;
   justify-content: center;
 }
+
+.auth_signUp {
+  display: flex;
+  flex-direction: column;
+}
+
+.auth_headerImage {
+  object-fit: contain;
+}
+
+.auth_text {
+  color: rgb(6, 153, 211);
+  text-align: center;
+  width: 100%;
+  cursor: pointer;
+}
+
+.auth_progress {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+}
