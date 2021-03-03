@@ -104,7 +104,18 @@ const Post: React.FC<PROPS_POST> = ({
             <Avatar className={styles.post_avatar} src={prof[0]?.img} />
             <h3>{prof[0]?.nickName}</h3>
           </div>
-          <img className={styles.post_image} src={imageUrl} alt="" />
+          <button
+          // onClick={() =>
+          //   history.push("/hello/react-router?message=hooks#test")
+          // }
+          >
+            <img
+              className={styles.post_image}
+              src={imageUrl}
+              alt="dddddddddd"
+            />
+          </button>
+
           <h4 className={styles.post_text}>
             <Checkbox
               className={styles.post_checkbox}
@@ -117,6 +128,7 @@ const Post: React.FC<PROPS_POST> = ({
             <AvatarGroup max={7}>
               {liked.map((like) => (
                 <Avatar
+                  // ここのぶぶんを郵政
                   className={styles.post_avararGroup}
                   key={like}
                   src={profiles.find((prof) => prof.userProfile === like)?.img}

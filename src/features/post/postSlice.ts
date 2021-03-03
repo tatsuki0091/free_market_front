@@ -7,13 +7,30 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { setOpenSignIn} from "../user/authSlice"
 
+import { PROPS_NEWPOST } from "../types"
+
 const apiUrlPost = `${process.env.REACT_APP_DEV_API_URL}api/post/`;
-const apiUrlComment = `${process.env.REACT_APP_DEV_API_URL}api/comment/`
+const apiUrlComment = `${process.env.REACT_APP_DEV_API_URL}api/comment/`;
 
 export const fetchAsyncGetPosts = createAsyncThunk("post/get", async () => {
     const res = await axios.get(apiUrlPost);
     return res.data;
 })
+
+export const fetchAsyncNewPost = createAsyncThunk(
+    "post/post",
+    async (newPost: PROPS_NEWPOST) => {
+        const uploadData = new FormData();
+        uploadData.append("title", newPost.title);
+        newPost.img && uploadData.append("img", newPost.img, newPost.img.name);
+        const res = await axios.post(apiUrlPost, uploadData, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `JWT ${localStorage.localJWT}`
+            }
+        });
+        return res.data;
+});
 
 // コメント取得
 export const fetchAsyncGetComments = createAsyncThunk(
@@ -95,6 +112,12 @@ const postSlice = createSlice({
                 comments: [...state.comments, action.payload],
             }
         });
+        builder.addCase(fetchAsyncNewPost.fulfilled, (state, action) => {
+            return {
+                ...state,
+                posts: [...state.posts, action.payload],
+            }
+        });
     }
   })
 
@@ -107,5 +130,6 @@ const postSlice = createSlice({
 
   export const selectPosts = (state: RootState) => state.post.posts;
   export const selectComments = (state: RootState) => state.post.comments;
+  export const selectOpenNewPost = (state: RootState) => state.post.openNewPost;
 
   export default postSlice.reducer;

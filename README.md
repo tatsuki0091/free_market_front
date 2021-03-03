@@ -55,3 +55,4 @@ npm install yup @types/yup
 npm install @types/react-modal
 npm install react-modal
 npm install axios
+npm install --save-dev @types/react-router-dom
