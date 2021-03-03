@@ -31,6 +31,25 @@ export const fetchAsyncRegister = createAsyncThunk(
     }
 );
 
+// ユーザ情報更新処理
+export const fetchAsyncUpdateProf = createAsyncThunk(
+    "profile/put",
+    async (profile: PROPS_PROFILE) => {
+        // formデータのオブジェクト作成
+        const uploadData = new FormData();
+        uploadData.append("nickName", profile.nickName);
+        // イメージがあった場合に処理をする
+        profile.img && uploadData.append("img", profile.img, profile.img.name);
+        const res = await axios.put(`${apiURL}api/profile/${profile.id}/`, uploadData, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `JWT ${localStorage.localJWT}`
+            },
+        });
+        return res.data;
+    }
+);
+
 export const fetchAsyncGetProfs = createAsyncThunk(
     "profiles/get",
     async () => {
@@ -116,6 +135,9 @@ const authSlice = createSlice({
         resetOpenProfile(state) {
             state.openProfile = false;
         },
+        editNickname(state, action) {
+            state.myprofile.nickName = action.payload;
+        },
     },
 
     // extraReducer追加
@@ -125,6 +147,11 @@ const authSlice = createSlice({
         builder.addCase(fetchAsyncLogin.fulfilled, (state, action) => {
             localStorage.setItem("localJWT", action.payload.access);
         });
+
+        builder.addCase(fetchAsyncCreateProf.fulfilled, (state, action) => {
+            state.myprofile = action.payload;
+        });
+        
         builder.addCase(fetchAsyncGetProfs.fulfilled, (state, action) => {
             state.profiles = action.payload;
         });
@@ -145,7 +172,9 @@ const authSlice = createSlice({
     resetOpenSignUp,
     fetchCredStart,
     fetchCredEnd,
-    resetOpenProfile
+    resetOpenProfile,
+    editNickname,
+    setOpenProfile, 
   } = authSlice.actions
 
   // 各スライスのstateにアクセスするための関数
@@ -154,7 +183,7 @@ const authSlice = createSlice({
   export const selectOpenSignUp = (state: RootState) => state.signUp.openSignUp;
   export const selectProfiles = (state: RootState) => state.auth.profiles;
   export const selectProfile = (state: RootState) => state.auth.myprofile;
+  export const selectOpenProfile = (state: RootState) => state.auth.openProfile;
   
-
 
   export default authSlice.reducer;

@@ -3,21 +3,29 @@ import { AppDispatch } from "../../app/store";
 import { useSelector, useDispatch } from "react-redux";
 import SignIn from "../user/SignIn";
 import SignUp from "../user/SignUp";
+import EditProfile from "./EditProfile";
 import Post from "../post/Post";
 import styles from "./Core.module.css";
+import NewPost from "./NewPost";
 import {
   setOpenSignIn,
   setOpenSignUp,
   resetOpenProfile,
+  setOpenProfile,
+  selectProfile,
+  fetchAsyncGetMyProf,
 } from "../user/authSlice";
 import { withStyles } from "@material-ui/core/styles";
 import { PROPS_PROFILE } from "../types";
+import { MdAddAPhoto } from "react-icons/md";
 
 import { fetchAsyncGetProfs } from "../user/authSlice";
 import {
   selectPosts,
   fetchAsyncGetPosts,
   resetOpenNewPost,
+  setOpenNewPost,
+  fetchAsyncGetComments,
 } from "../post/postSlice";
 import {
   Button,
@@ -60,38 +68,71 @@ const StyledBadge = withStyles((theme) => ({
 const Core: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const posts = useSelector(selectPosts);
+  const profile = useSelector(selectProfile);
   useEffect(() => {
     const fetchBootLoader = async () => {
+      if (localStorage.localJWT) {
+        const result = await dispatch(fetchAsyncGetMyProf());
+        if (fetchAsyncGetMyProf.rejected.match(result)) {
+          dispatch(setOpenSignIn());
+          return null;
+        }
+      }
       await dispatch(fetchAsyncGetPosts());
       await dispatch(fetchAsyncGetProfs());
+      await dispatch(fetchAsyncGetComments());
     };
+
     fetchBootLoader();
   }, [dispatch]);
   return (
     <>
       <AppBar color="default" position="static">
         <Grid container alignItems="center" justify="center">
-          <Grid item xs={9} md={9} lg={9}>
-            <h1>free market</h1>
+          <Grid item xs={4} md={4} lg={4}>
+            <h1 className={styles.core_title}>free market</h1>
           </Grid>
-          <Grid item xs={3} md={3} lg={3}>
-            {localStorage.localJWT ? (
-              <Button
-                variant="contained"
-                color="default"
-                onClick={async () => {
-                  console.log("dd");
-                  localStorage.removeItem("localJWT");
-                  dispatch(resetOpenProfile());
-                  dispatch(resetOpenNewPost());
-                  // ページを更新
-                  window.location.reload();
-                }}
-              >
-                Logout
-              </Button>
-            ) : (
-              <>
+          {localStorage.localJWT ? (
+            <>
+              <Grid item xs={4} md={4} lg={4}>
+                <div>
+                  <button
+                    className={styles.core_post_button}
+                    onClick={() => {
+                      dispatch(setOpenNewPost());
+                      dispatch(resetOpenProfile());
+                    }}
+                  >
+                    <MdAddAPhoto />
+                  </button>
+                </div>
+              </Grid>
+              <Grid item xs={4} md={4} lg={4}>
+                <div>
+                  <button
+                    className={styles.core_btnModal}
+                    onClick={() => {
+                      dispatch(setOpenProfile());
+                      dispatch(resetOpenNewPost());
+                    }}
+                  >
+                    <StyledBadge
+                      overlap="circle"
+                      anchorOrigin={{
+                        vertical: "bottom",
+                        horizontal: "right",
+                      }}
+                      variant="dot"
+                    >
+                      <Avatar alt="who?" src={profile.img} />{" "}
+                    </StyledBadge>
+                  </button>
+                </div>
+              </Grid>
+            </>
+          ) : (
+            <Grid item xs={4} md={4} lg={4}>
+              <div className={styles.core_btnModal}>
                 <Button
                   variant="contained"
                   color="default"
@@ -110,13 +151,15 @@ const Core: React.FC = () => {
                 >
                   Sign UP
                 </Button>
-              </>
-            )}
-          </Grid>
+              </div>
+            </Grid>
+          )}
         </Grid>
       </AppBar>
       <SignIn />
       <SignUp />
+      <EditProfile />
+      <NewPost />
       <>
         <div className={styles.core_posts}>
           <Grid container spacing={4}>

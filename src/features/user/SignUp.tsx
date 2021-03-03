@@ -11,12 +11,13 @@ import {
   setOpenSignUp,
   fetchAsyncLogin,
   fetchAsyncRegister,
+  selectIsLoadingAuth,
   fetchAsyncCreateProf,
 } from "./authSlice";
 import Modal from "react-modal";
 import { Formik } from "formik";
 import { useSelector, useDispatch } from "react-redux";
-import { Button, TextField } from "@material-ui/core";
+import { Button, TextField, CircularProgress } from "@material-ui/core";
 import { AppDispatch } from "../../app/store";
 import authStyle from "./Auth.module.css";
 // バリデーションのためのライブラリ
@@ -43,9 +44,16 @@ const SignUp: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   // フロントエンド側のURL
   const frontUrl = process.env.REACT_FRONT_DEV_API_URL;
+  const isLoadingAuth = useSelector(selectIsLoadingAuth);
   return (
     <>
-      <Modal isOpen={openSignUp} style={customStyles}>
+      <Modal
+        isOpen={openSignUp}
+        style={customStyles}
+        onRequestClose={async () => {
+          await dispatch(resetOpenSignUp());
+        }}
+      >
         <h1 className={authStyle.modalTitle}>Free Market</h1>
         <Formik
           initialErrors={{ email: "required" }}
@@ -60,8 +68,6 @@ const SignUp: React.FC = () => {
             }
             await dispatch(fetchCredEnd());
             await dispatch(resetOpenSignUp());
-            // トップページにリダイレクト
-            await document.location.assign(`${frontUrl}`);
           }}
           validationSchema={Yup.object().shape({
             email: Yup.string()
@@ -76,8 +82,12 @@ const SignUp: React.FC = () => {
             values,
             touched,
             errors,
+            isValid,
           }) => (
             <form onSubmit={handleSubmit}>
+              <div className={authStyle.auth_progress}>
+                {isLoadingAuth && <CircularProgress />}
+              </div>
               <div>
                 <label>email</label>
                 <br />
@@ -118,6 +128,7 @@ const SignUp: React.FC = () => {
                 type="submit"
                 variant="contained"
                 color="default"
+                disabled={!isValid}
               >
                 Register
               </Button>
@@ -125,18 +136,6 @@ const SignUp: React.FC = () => {
           )}
         />
 
-        <br />
-        <Button
-          className={authStyle.form}
-          variant="contained"
-          color="default"
-          onClick={async () => {
-            await dispatch(resetOpenSignUp());
-          }}
-        >
-          Close
-        </Button>
-        <br />
         <br />
         <div className={authStyle.auth_text}>
           <span
