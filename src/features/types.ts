@@ -1,3 +1,8 @@
+export interface File extends Blob {
+    readonly lastModified: number;
+    readonly name: string;
+}
+
 /*Post.tsx*/
 export interface PROPS_POST {
     postId: number;
@@ -26,4 +31,11 @@ export interface PROPS_AUTHEN {
 
 export interface PROPS_NICKNAME {
     nickName: string;
+}
+
+
+/*postSlice.ts*/
+export interface PROPS_NEWPOST {
+    title: string;
+    img: File | null;
 }

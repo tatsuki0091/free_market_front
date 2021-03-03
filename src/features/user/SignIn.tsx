@@ -10,9 +10,10 @@ import {
   resetOpenSignUp,
   fetchAsyncGetMyProf,
   setOpenSignUp,
+  selectIsLoadingAuth,
 } from "./authSlice";
 import { useSelector, useDispatch } from "react-redux";
-import { Button, TextField } from "@material-ui/core";
+import { Button, TextField, CircularProgress } from "@material-ui/core";
 import { AppDispatch } from "../../app/store";
 import authStyle from "./Auth.module.css";
 // バリデーションのためのライブラリ
@@ -40,24 +41,29 @@ const SignIn: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   // フロントエンド側のURL
   const frontUrl = process.env.REACT_FRONT_DEV_API_URL;
+  const isLoadingAuth = useSelector(selectIsLoadingAuth);
   return (
     <>
-      <Modal isOpen={openSignIn} style={customStyles}>
+      <Modal
+        isOpen={openSignIn}
+        onRequestClose={async () => {
+          await dispatch(resetOpenSignIn());
+        }}
+        style={customStyles}
+      >
         <h1 className={authStyle.modalTitle}>Free Market</h1>
         <Formik
           initialErrors={{ email: "required" }}
           initialValues={{ email: "", password: "" }}
           onSubmit={async (values) => {
             await dispatch(fetchCredStart());
-            console.log(values);
             const result = await dispatch(fetchAsyncLogin(values));
+            console.log("hhhh");
             if (fetchAsyncLogin.fulfilled.match(result)) {
               await dispatch(fetchAsyncGetMyProf());
             }
             await dispatch(fetchCredEnd());
             await dispatch(resetOpenSignIn());
-            // トップページにリダイレクト
-            await document.location.assign(`${frontUrl}`);
           }}
           validationSchema={Yup.object().shape({
             email: Yup.string()
@@ -72,9 +78,13 @@ const SignIn: React.FC = () => {
             values,
             touched,
             errors,
+            isValid,
           }) => (
             <>
               <form onSubmit={handleSubmit}>
+                <div className={authStyle.auth_progress}>
+                  {isLoadingAuth && <CircularProgress />}
+                </div>
                 <div>
                   <label>email</label>
                   <br />
@@ -117,6 +127,7 @@ const SignIn: React.FC = () => {
                   type="submit"
                   variant="contained"
                   color="default"
+                  disabled={!isValid}
                 >
                   Login
                 </Button>
@@ -125,7 +136,7 @@ const SignIn: React.FC = () => {
           )}
         />
 
-        <br />
+        {/* <br />
         <Button
           className={authStyle.form}
           variant="contained"
@@ -135,7 +146,7 @@ const SignIn: React.FC = () => {
           }}
         >
           Close
-        </Button>
+        </Button> */}
 
         <br />
         <br />
