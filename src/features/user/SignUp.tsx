@@ -1,14 +1,11 @@
 import React from "react";
 import {
   setOpenSignIn,
-  selectOpenSignIn,
-  resetOpenSignIn,
   resetOpenSignUp,
   selectOpenSignUp,
   fetchCredStart,
   fetchCredEnd,
   fetchAsyncGetMyProf,
-  setOpenSignUp,
   fetchAsyncLogin,
   fetchAsyncRegister,
   selectIsLoadingAuth,

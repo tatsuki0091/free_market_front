@@ -1,19 +1,15 @@
 import React, { useState } from "react";
 import styles from "./Post.module.css";
-import { makeStyles } from "@material-ui/core/styles";
 import { Avatar, Divider, Checkbox } from "@material-ui/core";
 import { Favorite, FavoriteBorder } from "@material-ui/icons";
+import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
 
 import AvatarGroup from "@material-ui/lab/AvatarGroup";
 
 import { AppDispatch } from "../../app/store";
 import { useSelector, useDispatch } from "react-redux";
 import { PROPS_POST } from "../types";
-import {
-  selectProfiles,
-  setOpenSignIn,
-  resetOpenSignUp,
-} from "../user/authSlice";
+import { selectProfiles, setOpenSignIn } from "../user/authSlice";
 import {
   selectComments,
   fetchAsyncPostComment,
@@ -104,18 +100,9 @@ const Post: React.FC<PROPS_POST> = ({
             <Avatar className={styles.post_avatar} src={prof[0]?.img} />
             <h3>{prof[0]?.nickName}</h3>
           </div>
-          <button
-          // onClick={() =>
-          //   history.push("/hello/react-router?message=hooks#test")
-          // }
-          >
-            <img
-              className={styles.post_image}
-              src={imageUrl}
-              alt="dddddddddd"
-            />
-          </button>
-
+          <Link to={`/detail/${postId}`}>
+            <img className={styles.post_image} src={imageUrl} alt="" />
+          </Link>
           <h4 className={styles.post_text}>
             <Checkbox
               className={styles.post_checkbox}
@@ -128,7 +115,6 @@ const Post: React.FC<PROPS_POST> = ({
             <AvatarGroup max={7}>
               {liked.map((like) => (
                 <Avatar
-                  // ここのぶぶんを郵政
                   className={styles.post_avararGroup}
                   key={like}
                   src={profiles.find((prof) => prof.userProfile === like)?.img}

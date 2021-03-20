@@ -1,87 +1,78 @@
 import React, { useEffect } from "react";
 import { AppDispatch } from "../../app/store";
 import { useSelector, useDispatch } from "react-redux";
-// import SignIn from "../user/SignIn";
-// import SignUp from "../user/SignUp";
-// import EditProfile from "./EditProfile";
-import Post from "../post/Post";
+import SignIn from "../user/SignIn";
+import SignUp from "../user/SignUp";
+import EditProfile from "./EditProfile";
+import NewPost from "./NewPost";
+import { Button, AppBar, Grid, Avatar, Badge } from "@material-ui/core";
 import styles from "./Core.module.css";
-// import NewPost from "./NewPost";
-import Header from "./Header";
-import {
-  //setOpenSignIn,
-  // setOpenSignUp,
-  // resetOpenProfile,
-  // setOpenProfile,
-  //selectProfile,
-  //fetchAsyncGetMyProf,
-  fetchAsyncGetProfs,
-} from "../user/authSlice";
-// import { withStyles } from "@material-ui/core/styles";
-// import { PROPS_PROFILE } from "../types";
-// import { MdAddAPhoto } from "react-icons/md";
+import { MdAddAPhoto } from "react-icons/md";
+import { withStyles } from "@material-ui/core/styles";
 import {
   selectPosts,
-  fetchAsyncGetPosts,
-  // resetOpenNewPost,
-  // setOpenNewPost,
-  // fetchAsyncGetComments,
+  resetOpenNewPost,
+  setOpenNewPost,
 } from "../post/postSlice";
 import {
-  // Button,
-  // AppBar,
-  Grid,
-  // Avatar,
-  // Badge,
-  // CircularProgress,
-} from "@material-ui/core";
+  setOpenSignIn,
+  setOpenSignUp,
+  resetOpenProfile,
+  setOpenProfile,
+  selectProfile,
+  fetchAsyncGetMyProf,
+  fetchAsyncGetProfs,
+} from "../user/authSlice";
 
-// const StyledBadge = withStyles((theme) => ({
-//   badge: {
-//     backgroundColor: "#44b700",
-//     color: "#44b700",
-//     boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
-//     "&::after": {
-//       position: "absolute",
-//       top: 0,
-//       left: 0,
-//       width: "100%",
-//       height: "100%",
-//       borderRadius: "50%",
-//       animation: "$ripple 1.2s infinite ease-in-out",
-//       border: "1px solid currentColor",
-//       content: '""',
-//     },
-//   },
-//   "@keyframes ripple": {
-//     "0%": {
-//       transform: "scale(.8)",
-//       opacity: 1,
-//     },
-//     "100%": {
-//       transform: "scale(2.4)",
-//       opacity: 0,
-//     },
-//   },
-// }))(Badge);
+const StyledBadge = withStyles((theme) => ({
+  badge: {
+    backgroundColor: "#44b700",
+    color: "#44b700",
+    boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+    "&::after": {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      borderRadius: "50%",
+      animation: "$ripple 1.2s infinite ease-in-out",
+      border: "1px solid currentColor",
+      content: '""',
+    },
+  },
+  "@keyframes ripple": {
+    "0%": {
+      transform: "scale(.8)",
+      opacity: 1,
+    },
+    "100%": {
+      transform: "scale(2.4)",
+      opacity: 0,
+    },
+  },
+}))(Badge);
 
-const Core: React.FC = () => {
+const Header: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const posts = useSelector(selectPosts);
-  //const profile = useSelector(selectProfile);
+  const profile = useSelector(selectProfile);
   useEffect(() => {
     const fetchBootLoader = async () => {
-      await dispatch(fetchAsyncGetPosts());
-      await dispatch(fetchAsyncGetProfs());
-      //await dispatch(fetchAsyncGetComments());
+      if (localStorage.localJWT) {
+        const result = await dispatch(fetchAsyncGetMyProf());
+        if (fetchAsyncGetMyProf.rejected.match(result)) {
+          dispatch(setOpenSignIn());
+          return null;
+        }
+      }
     };
 
     fetchBootLoader();
   }, [dispatch]);
   return (
     <>
-      <Header />
-      {/* <AppBar color="default" position="static">
+      <AppBar color="default" position="static">
         <Grid container alignItems="center" justify="center">
           <Grid item xs={4} md={4} lg={4}>
             <h1 className={styles.core_title}>free market</h1>
@@ -153,29 +144,9 @@ const Core: React.FC = () => {
       <SignIn />
       <SignUp />
       <EditProfile />
-      <NewPost /> */}
-      <>
-        <div className={styles.core_posts}>
-          <Grid container spacing={4}>
-            {posts
-              .slice(0)
-              .reverse()
-              .map((post) => (
-                <Grid key={post.id} item xs={12} md={4}>
-                  <Post
-                    postId={post.id}
-                    title={post.title}
-                    userPost={post.userPost}
-                    imageUrl={post.img}
-                    liked={post.liked}
-                  />
-                </Grid>
-              ))}
-          </Grid>
-        </div>
-      </>
+      <NewPost />
     </>
   );
 };
 
-export default Core;
+export default Header;

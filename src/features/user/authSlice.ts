@@ -35,9 +35,14 @@ export const fetchAsyncRegister = createAsyncThunk(
 export const fetchAsyncUpdateProf = createAsyncThunk(
     "profile/put",
     async (profile: PROPS_PROFILE) => {
+        console.log(profile)
         // formデータのオブジェクト作成
         const uploadData = new FormData();
         uploadData.append("nickName", profile.nickName);
+        uploadData.append("postCode", profile.postCode);
+        uploadData.append("address1", profile.address1);
+        uploadData.append("address2", profile.address2);
+        uploadData.append("phoneNumber", profile.phoneNumber);
         // イメージがあった場合に処理をする
         profile.img && uploadData.append("img", profile.img, profile.img.name);
         const res = await axios.put(`${apiURL}api/profile/${profile.id}/`, uploadData, {
@@ -54,6 +59,7 @@ export const fetchAsyncGetProfs = createAsyncThunk(
     "profiles/get",
     async () => {
         const res = await axios.get(`${apiURL}api/profile/`);
+        console.log(res)
         return res.data;
     }
 );
@@ -99,6 +105,10 @@ const authSlice = createSlice({
             userProfile: 0,
             created_on: "",
             img:"",
+            postCode:"",
+            address1:"",
+            address2:"",
+            phoneNumber:"",
         },
         profiles: [
             {
@@ -138,6 +148,18 @@ const authSlice = createSlice({
         editNickname(state, action) {
             state.myprofile.nickName = action.payload;
         },
+        editPostCode(state, action) {
+            state.myprofile.postCode = action.payload;
+        },
+        editAddress1(state, action) {
+            state.myprofile.address1 = action.payload;
+        },
+        editAddress2(state, action) {
+            state.myprofile.address2 = action.payload;
+        },
+        editPhoneNumber(state, action) {
+            state.myprofile.phoneNumber = action.payload;
+        },
     },
 
     // extraReducer追加
@@ -174,7 +196,11 @@ const authSlice = createSlice({
     fetchCredEnd,
     resetOpenProfile,
     editNickname,
-    setOpenProfile, 
+    setOpenProfile,
+    editPostCode,
+    editAddress1,
+    editAddress2,
+    editPhoneNumber, 
   } = authSlice.actions
 
   // 各スライスのstateにアクセスするための関数
