@@ -26,6 +26,7 @@
     "react-icons-md": "^1.1.0",
     "react-modal": "^3.12.1",
     "react-redux": "^7.2.0",
+    "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.1",
     "typescript": "~3.8.2",
     "yup": "^0.32.8"
@@ -50,5 +51,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/react-router-dom": "^5.1.7"
   }
 }

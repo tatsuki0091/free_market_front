@@ -2,18 +2,20 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState  } from '../../app/store';
 import axios from "axios";
 import { PROPS_COMMENT} from "../types"
-import { AppDispatch } from "../../app/store";
-import { useSelector, useDispatch } from "react-redux";
 
-import { setOpenSignIn} from "../user/authSlice"
-
-import { PROPS_NEWPOST } from "../types"
+import { PROPS_NEWPOST, DETAIL_ID } from "../types"
 
 const apiUrlPost = `${process.env.REACT_APP_DEV_API_URL}api/post/`;
 const apiUrlComment = `${process.env.REACT_APP_DEV_API_URL}api/comment/`;
+const apiUrlDetailPost = `${process.env.REACT_APP_DEV_API_URL}api/post/detail/`;
 
 export const fetchAsyncGetPosts = createAsyncThunk("post/get", async () => {
     const res = await axios.get(apiUrlPost);
+    return res.data;
+})
+
+export const fetchAsyncGetDetailPost = createAsyncThunk("post/getDetail", async (detail: DETAIL_ID) => {
+    const res = await axios.get(`${apiUrlDetailPost}${detail.id}`);
     return res.data;
 })
 
@@ -69,6 +71,17 @@ const postSlice = createSlice({
                 price: 0
             }
         ],
+        detailPost: 
+            {
+                id:0,
+                title: "",
+                userPost: 0,
+                created_on: "",
+                img: "",
+                liked: [0],
+                price: 0
+            }
+        ,
         comments: [
             {
                 id:0,
@@ -118,6 +131,12 @@ const postSlice = createSlice({
                 posts: [...state.posts, action.payload],
             }
         });
+        builder.addCase(fetchAsyncGetDetailPost.fulfilled, (state, action) => {
+            return {
+                ...state,
+                detailPost: action.payload,
+            }
+        });
     }
   })
 
@@ -131,5 +150,6 @@ const postSlice = createSlice({
   export const selectPosts = (state: RootState) => state.post.posts;
   export const selectComments = (state: RootState) => state.post.comments;
   export const selectOpenNewPost = (state: RootState) => state.post.openNewPost;
+  export const selectDetailPost = (state: RootState) => state.post.detailPost;
 
   export default postSlice.reducer;

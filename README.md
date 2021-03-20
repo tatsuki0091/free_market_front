@@ -55,4 +55,6 @@ npm install yup @types/yup
 npm install @types/react-modal
 npm install react-modal
 npm install axios
+// typescript 用の react-router-dpm だけではうまくいかなかったため普通のやつもインストール
 npm install --save-dev @types/react-router-dom
+npm install react-router-dom --save

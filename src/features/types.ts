@@ -16,6 +16,10 @@ export interface PROPS_PROFILE {
     id: number;
     nickName: string;
     img: File | null;
+    postCode: string;
+    address1: string;
+    address2: string;
+    phoneNumber: string;
 }
 
 export interface PROPS_COMMENT {
@@ -38,4 +42,8 @@ export interface PROPS_NICKNAME {
 export interface PROPS_NEWPOST {
     title: string;
     img: File | null;
+}
+
+export interface DETAIL_ID {
+    id: string;
 }

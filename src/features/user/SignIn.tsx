@@ -7,7 +7,6 @@ import {
   fetchCredEnd,
   fetchAsyncLogin,
   resetOpenSignIn,
-  resetOpenSignUp,
   fetchAsyncGetMyProf,
   setOpenSignUp,
   selectIsLoadingAuth,
@@ -40,7 +39,7 @@ const SignIn: React.FC = () => {
   const openSignIn = useSelector(selectOpenSignIn);
   const dispatch: AppDispatch = useDispatch();
   // フロントエンド側のURL
-  const frontUrl = process.env.REACT_FRONT_DEV_API_URL;
+  //const frontUrl = process.env.REACT_FRONT_DEV_API_URL;
   const isLoadingAuth = useSelector(selectIsLoadingAuth);
   return (
     <>
@@ -58,7 +57,6 @@ const SignIn: React.FC = () => {
           onSubmit={async (values) => {
             await dispatch(fetchCredStart());
             const result = await dispatch(fetchAsyncLogin(values));
-            console.log("hhhh");
             if (fetchAsyncLogin.fulfilled.match(result)) {
               await dispatch(fetchAsyncGetMyProf());
             }
