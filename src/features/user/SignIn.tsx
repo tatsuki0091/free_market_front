@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Modal from "react-modal";
 import { Formik } from "formik";
 import {
@@ -10,6 +10,7 @@ import {
   fetchAsyncGetMyProf,
   setOpenSignUp,
   selectIsLoadingAuth,
+  setOpenSignIn,
 } from "./authSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { Button, TextField, CircularProgress } from "@material-ui/core";
@@ -41,6 +42,7 @@ const SignIn: React.FC = () => {
   // フロントエンド側のURL
   //const frontUrl = process.env.REACT_FRONT_DEV_API_URL;
   const isLoadingAuth = useSelector(selectIsLoadingAuth);
+  const [message, setMessage] = useState("");
   return (
     <>
       <Modal
@@ -59,9 +61,19 @@ const SignIn: React.FC = () => {
             const result = await dispatch(fetchAsyncLogin(values));
             if (fetchAsyncLogin.fulfilled.match(result)) {
               await dispatch(fetchAsyncGetMyProf());
+              await dispatch(fetchCredEnd());
+              await dispatch(resetOpenSignIn());
+              // エラーメッセージがあれば削除
+              if (message !== "") {
+                setMessage("");
+              }
+            } else {
+              setMessage("Your email address or password is wrong");
+              // 入力した値を残したいのであればawait dispatch(resetOpenSignIn());を削除
+              await dispatch(resetOpenSignIn());
+              await dispatch(fetchCredEnd());
+              await dispatch(setOpenSignIn());
             }
-            await dispatch(fetchCredEnd());
-            await dispatch(resetOpenSignIn());
           }}
           validationSchema={Yup.object().shape({
             email: Yup.string()
@@ -114,10 +126,8 @@ const SignIn: React.FC = () => {
                   />
                 </div>
                 <br />
-                {touched.password && errors.password ? (
-                  <div className={authStyle.validateFont}>
-                    {errors.password}
-                  </div>
+                {message !== "" ? (
+                  <div className={authStyle.validateFont}>{message}</div>
                 ) : null}
                 <br />
                 <Button

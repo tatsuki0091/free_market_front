@@ -24,6 +24,10 @@
   word-break: break-all;
 }
 
+.post_title {
+  text-align: center;
+}
+
 .post_checkBox {
   z-index: 0;
 }

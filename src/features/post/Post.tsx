@@ -21,6 +21,7 @@ const Post: React.FC<PROPS_POST> = ({
   postId,
   userPost,
   title,
+  price,
   imageUrl,
   liked,
 }) => {
@@ -104,15 +105,13 @@ const Post: React.FC<PROPS_POST> = ({
             <img className={styles.post_image} src={imageUrl} alt="" />
           </Link>
           <h4 className={styles.post_text}>
-            <Checkbox
-              className={styles.post_checkbox}
-              icon={<FavoriteBorder />}
-              checkedIcon={<Favorite />}
-              //   checked={liked.some((like) => like === loginId)}
-              //   onChange={handlerLiked}
-            />
-            <strong> {prof[0]?.nickName}</strong> {title}
-            <AvatarGroup max={7}>
+            <div className={styles.post_title}>
+              <strong>{title}</strong>
+              <br />
+              <br />
+              <strong>${price}</strong>
+            </div>
+            {/* <AvatarGroup max={7}>
               {liked.map((like) => (
                 <Avatar
                   className={styles.post_avararGroup}
@@ -120,11 +119,11 @@ const Post: React.FC<PROPS_POST> = ({
                   src={profiles.find((prof) => prof.userProfile === like)?.img}
                 />
               ))}
-            </AvatarGroup>
+            </AvatarGroup> */}
           </h4>
 
-          <Divider />
-          <div className={styles.post_comments}>
+          {/* <Divider /> */}
+          {/* <div className={styles.post_comments}>
             {commentsOnPost.map((comment) => (
               <div key={comment.id} className={styles.post_comment}>
                 <Avatar
@@ -147,7 +146,7 @@ const Post: React.FC<PROPS_POST> = ({
               </div>
             ))}
           </div>
-          {postButton()}
+          {postButton()}*/}
         </div>
       </>
     );

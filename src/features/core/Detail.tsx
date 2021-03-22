@@ -6,20 +6,10 @@ import Header from "./Header";
 import { RouteComponentProps } from "react-router-dom";
 import styles from "./Core.module.css";
 //import styles from "../post/Post.module.css";
-import { Grid } from "@material-ui/core";
-import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
-import { Avatar, Divider, Checkbox } from "@material-ui/core";
-import { Favorite, FavoriteBorder } from "@material-ui/icons";
-import {
-  selectProfiles,
-  setOpenSignIn,
-  fetchAsyncGetProfs,
-} from "../user/authSlice";
+import { Avatar, Divider, Button } from "@material-ui/core";
+import { selectProfiles, fetchAsyncGetProfs } from "../user/authSlice";
 import {
   selectComments,
-  fetchAsyncPostComment,
-  fetchPostStart,
-  fetchPostEnd,
   fetchAsyncGetComments,
   fetchAsyncGetDetailPost,
   selectDetailPost,
@@ -65,7 +55,7 @@ const Detail: React.FC<PageProps> = (props) => {
           <h3 className={styles.detail_post_title}>{detailPost?.title}</h3>
           <h3 className={styles.detail_post_price}>${detailPost?.price}</h3>
           <h4 className={styles.detail_post_price}>
-            <strong> ${detailPost?.price}</strong>
+            <strong> {detailPost?.description}</strong>
             {/* <AvatarGroup max={7}>
             {liked.map((like) => (
               <Avatar
@@ -76,10 +66,22 @@ const Detail: React.FC<PageProps> = (props) => {
             ))}
           </AvatarGroup> */}
           </h4>
+          <div className={styles.detail_purchase}>
+            <Button
+              variant="contained"
+              color="default"
+              onClick={async () => {
+                //await dispatch(setOpenSignUp());
+              }}
+            >
+              Purchase
+            </Button>
+          </div>
+          <br />
         </div>
 
-        <Divider />
-        <div className={styles.detail_post_comments}></div>
+        {/* <Divider />
+        <div className={styles.detail_post_comments}></div> */}
       </div>
 
       {/* {commentsOnPost.map((comment) => (
