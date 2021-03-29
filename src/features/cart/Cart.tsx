@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { AppDispatch } from "../../app/store";
+import { useSelector, useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -29,6 +30,15 @@ function createData(
 const Cart = () => {
   const dispatch: AppDispatch = useDispatch();
   const classes = useStyles();
+
+  useEffect(() => {
+    const fetchBootLoader = async () => {
+      // const packet = { id: id };
+      // await dispatch(getCartItem(packet));
+    };
+
+    fetchBootLoader();
+  }, [dispatch]);
 
   const rows = [
     createData("Frozen yoghurt", 159, 6, 24, 4),
