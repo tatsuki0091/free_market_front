@@ -24,6 +24,8 @@ export const fetchAsyncNewPost = createAsyncThunk(
     async (newPost: PROPS_NEWPOST) => {
         const uploadData = new FormData();
         uploadData.append("title", newPost.title);
+        uploadData.append("price", newPost.price);
+        uploadData.append("description", newPost.description);
         newPost.img && uploadData.append("img", newPost.img, newPost.img.name);
         const res = await axios.post(apiUrlPost, uploadData, {
             headers: {
@@ -68,7 +70,8 @@ const postSlice = createSlice({
                 created_on: "",
                 img: "",
                 liked: [0],
-                price: 0
+                price: 0,
+                description: ""
             }
         ],
         detailPost: 
@@ -79,7 +82,8 @@ const postSlice = createSlice({
                 created_on: "",
                 img: "",
                 liked: [0],
-                price: 0
+                price: 0,
+                description: ""
             }
         ,
         comments: [

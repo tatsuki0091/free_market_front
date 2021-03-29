@@ -5,25 +5,24 @@ import { PROPS_POST } from "../types";
 import Header from "./Header";
 import { RouteComponentProps } from "react-router-dom";
 import styles from "./Core.module.css";
-//import styles from "../post/Post.module.css";
-import { Grid } from "@material-ui/core";
-import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
-import { Avatar, Divider, Checkbox } from "@material-ui/core";
-import { Favorite, FavoriteBorder } from "@material-ui/icons";
+import { Formik } from "formik";
+import { useHistory } from "react-router-dom";
+import { Avatar, Divider, Button } from "@material-ui/core";
 import {
   selectProfiles,
-  setOpenSignIn,
   fetchAsyncGetProfs,
+  selectProfile,
+  fetchAsyncGetMyProf,
+  setOpenSignIn,
 } from "../user/authSlice";
+//import * as Yup from "yup";
 import {
-  selectComments,
-  fetchAsyncPostComment,
-  fetchPostStart,
-  fetchPostEnd,
-  fetchAsyncGetComments,
+  // selectComments,
+  // fetchAsyncGetComments,
   fetchAsyncGetDetailPost,
   selectDetailPost,
 } from "../post/postSlice";
+import { fetchAsyncAddCart } from "../cart/cartSlice";
 
 type PageProps = PROPS_POST & RouteComponentProps<{ id: string }>;
 
@@ -32,7 +31,8 @@ const Detail: React.FC<PageProps> = (props) => {
   const [id, setId] = useState(props.match.params.id);
   const detailPost = useSelector(selectDetailPost);
   const profiles = useSelector(selectProfiles);
-  const comments = useSelector(selectComments);
+  const myProfile = useSelector(selectProfile);
+  let history = useHistory();
   const prof = profiles.filter((prof) => {
     return prof.userProfile === detailPost.userPost;
   });
@@ -42,7 +42,8 @@ const Detail: React.FC<PageProps> = (props) => {
       const packet = { id: id };
       await dispatch(fetchAsyncGetDetailPost(packet));
       await dispatch(fetchAsyncGetProfs());
-      await dispatch(fetchAsyncGetComments());
+      //await dispatch(fetchAsyncGetComments());
+      await dispatch(fetchAsyncGetMyProf());
     };
 
     fetchBootLoader();
@@ -65,7 +66,7 @@ const Detail: React.FC<PageProps> = (props) => {
           <h3 className={styles.detail_post_title}>{detailPost?.title}</h3>
           <h3 className={styles.detail_post_price}>${detailPost?.price}</h3>
           <h4 className={styles.detail_post_price}>
-            <strong> ${detailPost?.price}</strong>
+            <strong> {detailPost?.description}</strong>
             {/* <AvatarGroup max={7}>
             {liked.map((like) => (
               <Avatar
@@ -76,10 +77,68 @@ const Detail: React.FC<PageProps> = (props) => {
             ))}
           </AvatarGroup> */}
           </h4>
+          <div className={styles.detail_purchase}>
+            <Formik
+              //initialValues に遅延処理で取得した値を設定したりするので、フォームの初期値を再設定
+              enableReinitialize={true}
+              // initialErrors={{ email: "required" }}
+              initialValues={{
+                cartUserPost: `${detailPost?.userPost}`,
+                cartUserProfile: `${myProfile?.userProfile}`,
+              }}
+              onSubmit={async (values) => {
+                if (
+                  localStorage.localJWT &&
+                  values.cartUserPost !== values.cartUserProfile
+                ) {
+                  await dispatch(fetchAsyncAddCart(values));
+                  history.push("/cart");
+                } else {
+                  await dispatch(setOpenSignIn());
+                }
+              }}
+              // validationSchema={Yup.object().shape({
+              //   // refで他の欄を参照できます！
+              //   cartUserPost: Yup.string().test(sameId),
+              // })}
+              render={({ handleSubmit, values, touched, isValid, errors }) => (
+                <>
+                  <input
+                    type="text"
+                    id="cartUserPost"
+                    name="userPost"
+                    hidden={true}
+                  />
+                  <input
+                    type="text"
+                    id="cartUserProfile"
+                    name="userProfile"
+                    hidden={true}
+                  />
+                  <form onSubmit={handleSubmit}>
+                    <br />
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      color="default"
+                      disabled={
+                        values.cartUserPost !== values.cartUserProfile
+                          ? !isValid
+                          : isValid
+                      }
+                    >
+                      Add the cart
+                    </Button>
+                  </form>
+                </>
+              )}
+            />
+          </div>
+          <br />
         </div>
 
-        <Divider />
-        <div className={styles.detail_post_comments}></div>
+        {/* <Divider />
+        <div className={styles.detail_post_comments}></div> */}
       </div>
 
       {/* {commentsOnPost.map((comment) => (

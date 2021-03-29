@@ -1,17 +1,17 @@
 import React, { useState } from "react";
 import styles from "./Post.module.css";
 import { Avatar, Divider, Checkbox } from "@material-ui/core";
-import { Favorite, FavoriteBorder } from "@material-ui/icons";
+// import { Favorite, FavoriteBorder } from "@material-ui/icons";
 import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
 
-import AvatarGroup from "@material-ui/lab/AvatarGroup";
+// import AvatarGroup from "@material-ui/lab/AvatarGroup";
 
 import { AppDispatch } from "../../app/store";
 import { useSelector, useDispatch } from "react-redux";
 import { PROPS_POST } from "../types";
 import { selectProfiles, setOpenSignIn } from "../user/authSlice";
 import {
-  selectComments,
+  //selectComments,
   fetchAsyncPostComment,
   fetchPostStart,
   fetchPostEnd,
@@ -21,15 +21,16 @@ const Post: React.FC<PROPS_POST> = ({
   postId,
   userPost,
   title,
+  price,
   imageUrl,
-  liked,
+  //liked,
 }) => {
   const dispatch: AppDispatch = useDispatch();
   const profiles = useSelector(selectProfiles);
-  const comments = useSelector(selectComments);
-  const commentsOnPost = comments.filter((com) => {
-    return com.post === postId;
-  });
+  // const comments = useSelector(selectComments);
+  // const commentsOnPost = comments.filter((com) => {
+  //   return com.post === postId;
+  // });
   const [text, setText] = useState("");
 
   const prof = profiles.filter((prof) => {
@@ -104,15 +105,13 @@ const Post: React.FC<PROPS_POST> = ({
             <img className={styles.post_image} src={imageUrl} alt="" />
           </Link>
           <h4 className={styles.post_text}>
-            <Checkbox
-              className={styles.post_checkbox}
-              icon={<FavoriteBorder />}
-              checkedIcon={<Favorite />}
-              //   checked={liked.some((like) => like === loginId)}
-              //   onChange={handlerLiked}
-            />
-            <strong> {prof[0]?.nickName}</strong> {title}
-            <AvatarGroup max={7}>
+            <div className={styles.post_title}>
+              <strong>{title}</strong>
+              <br />
+              <br />
+              <strong>${price}</strong>
+            </div>
+            {/* <AvatarGroup max={7}>
               {liked.map((like) => (
                 <Avatar
                   className={styles.post_avararGroup}
@@ -120,11 +119,11 @@ const Post: React.FC<PROPS_POST> = ({
                   src={profiles.find((prof) => prof.userProfile === like)?.img}
                 />
               ))}
-            </AvatarGroup>
+            </AvatarGroup> */}
           </h4>
 
-          <Divider />
-          <div className={styles.post_comments}>
+          {/* <Divider /> */}
+          {/* <div className={styles.post_comments}>
             {commentsOnPost.map((comment) => (
               <div key={comment.id} className={styles.post_comment}>
                 <Avatar
@@ -147,7 +146,7 @@ const Post: React.FC<PROPS_POST> = ({
               </div>
             ))}
           </div>
-          {postButton()}
+          {postButton()}*/}
         </div>
       </>
     );

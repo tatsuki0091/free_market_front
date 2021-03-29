@@ -165,6 +165,7 @@ const Core: React.FC = () => {
                   <Post
                     postId={post.id}
                     title={post.title}
+                    price={post.price}
                     userPost={post.userPost}
                     imageUrl={post.img}
                     liked={post.liked}

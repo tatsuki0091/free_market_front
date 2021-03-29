@@ -8,6 +8,7 @@ export interface PROPS_POST {
     postId: number;
     userPost: number;
     title: string;
+    price: number;
     imageUrl: string;
     liked: number[];
 }
@@ -42,8 +43,16 @@ export interface PROPS_NICKNAME {
 export interface PROPS_NEWPOST {
     title: string;
     img: File | null;
+    price: string;
+    description: string;
 }
 
 export interface DETAIL_ID {
     id: string;
+}
+
+
+export interface ADD_CART {
+    cartUserPost: string;
+    cartUserProfile: string;
 }

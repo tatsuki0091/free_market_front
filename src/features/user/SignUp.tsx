@@ -39,8 +39,6 @@ const SignUp: React.FC = () => {
   // Modalのステート（初期値はfalse)
   const openSignUp = useSelector(selectOpenSignUp);
   const dispatch: AppDispatch = useDispatch();
-  // フロントエンド側のURL
-  const frontUrl = process.env.REACT_FRONT_DEV_API_URL;
   const isLoadingAuth = useSelector(selectIsLoadingAuth);
   return (
     <>
