@@ -50,3 +50,9 @@ export interface PROPS_NEWPOST {
 export interface DETAIL_ID {
     id: string;
 }
+
+
+export interface ADD_CART {
+    cartUserPost: string;
+    cartUserProfile: string;
+}

@@ -1,17 +1,17 @@
 import React, { useState } from "react";
 import styles from "./Post.module.css";
 import { Avatar, Divider, Checkbox } from "@material-ui/core";
-import { Favorite, FavoriteBorder } from "@material-ui/icons";
+// import { Favorite, FavoriteBorder } from "@material-ui/icons";
 import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
 
-import AvatarGroup from "@material-ui/lab/AvatarGroup";
+// import AvatarGroup from "@material-ui/lab/AvatarGroup";
 
 import { AppDispatch } from "../../app/store";
 import { useSelector, useDispatch } from "react-redux";
 import { PROPS_POST } from "../types";
 import { selectProfiles, setOpenSignIn } from "../user/authSlice";
 import {
-  selectComments,
+  //selectComments,
   fetchAsyncPostComment,
   fetchPostStart,
   fetchPostEnd,
@@ -23,14 +23,14 @@ const Post: React.FC<PROPS_POST> = ({
   title,
   price,
   imageUrl,
-  liked,
+  //liked,
 }) => {
   const dispatch: AppDispatch = useDispatch();
   const profiles = useSelector(selectProfiles);
-  const comments = useSelector(selectComments);
-  const commentsOnPost = comments.filter((com) => {
-    return com.post === postId;
-  });
+  // const comments = useSelector(selectComments);
+  // const commentsOnPost = comments.filter((com) => {
+  //   return com.post === postId;
+  // });
   const [text, setText] = useState("");
 
   const prof = profiles.filter((prof) => {

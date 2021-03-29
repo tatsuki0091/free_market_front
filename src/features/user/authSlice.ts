@@ -35,7 +35,6 @@ export const fetchAsyncRegister = createAsyncThunk(
 export const fetchAsyncUpdateProf = createAsyncThunk(
     "profile/put",
     async (profile: PROPS_PROFILE) => {
-        console.log(profile)
         // formデータのオブジェクト作成
         const uploadData = new FormData();
         uploadData.append("nickName", profile.nickName);
@@ -59,7 +58,6 @@ export const fetchAsyncGetProfs = createAsyncThunk(
     "profiles/get",
     async () => {
         const res = await axios.get(`${apiURL}api/profile/`);
-        console.log(res)
         return res.data;
     }
 );
