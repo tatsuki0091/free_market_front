@@ -32,7 +32,7 @@ const Detail: React.FC<PageProps> = (props) => {
   const detailPost = useSelector(selectDetailPost);
   const profiles = useSelector(selectProfiles);
   const myProfile = useSelector(selectProfile);
-  let history = useHistory();
+  const history = useHistory();
   const prof = profiles.filter((prof) => {
     return prof.userProfile === detailPost.userPost;
   });
@@ -92,7 +92,7 @@ const Detail: React.FC<PageProps> = (props) => {
                   values.cartUserPost !== values.cartUserProfile
                 ) {
                   await dispatch(fetchAsyncAddCart(values));
-                  history.push("/cart");
+                  history.push(`/cart`);
                 } else {
                   await dispatch(setOpenSignIn());
                 }

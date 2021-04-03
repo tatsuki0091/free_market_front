@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { AppDispatch } from "../../app/store";
 import { useSelector, useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
@@ -10,6 +10,10 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import Header from "../core/Header";
+import { fetchAsyncGetMyProf, selectProfile } from "../user/authSlice";
+import { useHistory, RouteComponentProps } from "react-router-dom";
+import { fetchAsyncGetCartItems, selectCartItems } from "../cart/cartSlice";
+import { CART_USER_PROFILE_ID } from "../types";
 
 const useStyles = makeStyles({
   table: {
@@ -27,19 +31,31 @@ function createData(
   return { name, calories, fat, carbs, protein };
 }
 
-const Cart = () => {
+type PageProps = CART_USER_PROFILE_ID & RouteComponentProps<{ id: string }>;
+
+const Cart: React.FC<PageProps> = (props) => {
   const dispatch: AppDispatch = useDispatch();
+  //const { count, setCount } = useContext(myProfContext);
+
+  const myProfile = useSelector(selectProfile);
+  const cartItems = useSelector(selectCartItems);
   const classes = useStyles();
+  const history = useHistory();
 
   useEffect(() => {
     const fetchBootLoader = async () => {
-      // const packet = { id: id };
-      // await dispatch(getCartItem(packet));
+      if (localStorage.localJWT) {
+        await dispatch(fetchAsyncGetMyProf());
+        const packet = { cartUserProfile: `${myProfile.userProfile}` };
+        await dispatch(fetchAsyncGetCartItems(packet));
+      } else {
+        // ログインしてなかったらトップ画面に遷移
+        history.push("/");
+      }
     };
-
     fetchBootLoader();
   }, [dispatch]);
-
+  console.log(cartItems);
   const rows = [
     createData("Frozen yoghurt", 159, 6, 24, 4),
     createData("Ice cream sandwich", 237, 9, 37, 4),

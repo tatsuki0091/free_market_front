@@ -56,3 +56,7 @@ export interface ADD_CART {
     cartUserPost: string;
     cartUserProfile: string;
 }
+
+export interface CART_USER_PROFILE_ID {
+    cartUserProfile: string;
+}

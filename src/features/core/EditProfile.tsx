@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, createContext } from "react";
 import Modal from "react-modal";
 import styles from "./Core.module.css";
 import { AppDispatch } from "../../app/store";
@@ -8,6 +8,13 @@ import * as Yup from "yup";
 import { File } from "../types";
 import { resetOpenNewPost } from "../post/postSlice";
 import authStyle from "../user/Auth.module.css";
+import {
+  BrowserRouter as Router,
+  Link,
+  Route,
+  Switch,
+  useHistory,
+} from "react-router-dom";
 
 import {
   editNickname,
@@ -21,6 +28,7 @@ import {
   editAddress1,
   editAddress2,
   editPhoneNumber,
+  fetchAsyncGetMyProf,
 } from "../user/authSlice";
 
 import { Button, TextField, IconButton } from "@material-ui/core";
@@ -49,8 +57,11 @@ const EditProfile: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const openProfile = useSelector(selectOpenProfile);
   const profile = useSelector(selectProfile);
+  const history = useHistory();
+
   // 画像のstateで初期値はnullに設定
   const [image, setImage] = useState<File | null>(null);
+
   const updateProfile = async (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     const packet = {
@@ -69,6 +80,13 @@ const EditProfile: React.FC = () => {
     await dispatch(resetOpenProfile());
     window.location.reload();
   };
+
+  useEffect(() => {
+    const fetchBootLoader = async () => {
+      await dispatch(fetchAsyncGetMyProf());
+    };
+    fetchBootLoader();
+  }, [dispatch]);
 
   const handleEditPicture = () => {
     const fileInput = document.getElementById("imageInput");
@@ -142,7 +160,6 @@ const EditProfile: React.FC = () => {
                 value={profile?.postCode}
                 onChange={(e) => dispatch(editPostCode(e.target.value))}
               />
-              {console.log(errors.postCode)}
               {touched.postCode && errors.postCode ? (
                 <div className={authStyle.validateFont}>{errors.postCode}</div>
               ) : null}
@@ -185,6 +202,18 @@ const EditProfile: React.FC = () => {
               >
                 Update
               </Button>
+              <br />
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={async () => {
+                  await dispatch(resetOpenProfile());
+                  history.push(`/cart`);
+                }}
+              >
+                Cart
+              </Button>
+
               <br />
               <Button
                 variant="contained"

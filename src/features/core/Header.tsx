@@ -9,6 +9,7 @@ import { Button, AppBar, Grid, Avatar, Badge } from "@material-ui/core";
 import styles from "./Core.module.css";
 import { MdAddAPhoto } from "react-icons/md";
 import { withStyles } from "@material-ui/core/styles";
+import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
 import {
   selectPosts,
   resetOpenNewPost,
@@ -75,7 +76,9 @@ const Header: React.FC = () => {
       <AppBar color="default" position="static">
         <Grid container alignItems="center" justify="center">
           <Grid item xs={4} md={4} lg={4}>
-            <h1 className={styles.core_title}>free market</h1>
+            <h1 className={styles.core_title}>
+              <Link to={"/"}>free market</Link>
+            </h1>
           </Grid>
           {localStorage.localJWT ? (
             <>
