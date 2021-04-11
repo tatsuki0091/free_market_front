@@ -1,4 +1,4 @@
-import React, { useEffect, useState, createContext } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import styles from "./Core.module.css";
 import { AppDispatch } from "../../app/store";

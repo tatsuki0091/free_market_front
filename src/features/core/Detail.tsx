@@ -85,6 +85,8 @@ const Detail: React.FC<PageProps> = (props) => {
               initialValues={{
                 cartUserPost: `${detailPost?.userPost}`,
                 cartUserProfile: `${myProfile?.userProfile}`,
+                post: id,
+                profile: `${myProfile?.userProfile}`,
               }}
               onSubmit={async (values) => {
                 if (
@@ -92,7 +94,7 @@ const Detail: React.FC<PageProps> = (props) => {
                   values.cartUserPost !== values.cartUserProfile
                 ) {
                   await dispatch(fetchAsyncAddCart(values));
-                  history.push(`/cart`);
+                  await history.push(`/cart`);
                 } else {
                   await dispatch(setOpenSignIn());
                 }
@@ -101,7 +103,7 @@ const Detail: React.FC<PageProps> = (props) => {
               //   // refで他の欄を参照できます！
               //   cartUserPost: Yup.string().test(sameId),
               // })}
-              render={({ handleSubmit, values, touched, isValid, errors }) => (
+              render={({ handleSubmit, values, isValid }) => (
                 <>
                   <input
                     type="text"
@@ -109,10 +111,17 @@ const Detail: React.FC<PageProps> = (props) => {
                     name="userPost"
                     hidden={true}
                   />
+                  <input type="text" id="post" name="post" hidden={true} />
                   <input
                     type="text"
                     id="cartUserProfile"
                     name="userProfile"
+                    hidden={true}
+                  />
+                  <input
+                    type="text"
+                    id="profile"
+                    name="profile"
                     hidden={true}
                   />
                   <form onSubmit={handleSubmit}>

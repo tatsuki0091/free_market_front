@@ -10,11 +10,7 @@ import styles from "./Core.module.css";
 import { MdAddAPhoto } from "react-icons/md";
 import { withStyles } from "@material-ui/core/styles";
 import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
-import {
-  selectPosts,
-  resetOpenNewPost,
-  setOpenNewPost,
-} from "../post/postSlice";
+import { resetOpenNewPost, setOpenNewPost } from "../post/postSlice";
 import {
   setOpenSignIn,
   setOpenSignUp,
@@ -22,7 +18,6 @@ import {
   setOpenProfile,
   selectProfile,
   fetchAsyncGetMyProf,
-  fetchAsyncGetProfs,
 } from "../user/authSlice";
 
 const StyledBadge = withStyles((theme) => ({
@@ -56,7 +51,6 @@ const StyledBadge = withStyles((theme) => ({
 
 const Header: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
-  const posts = useSelector(selectPosts);
   const profile = useSelector(selectProfile);
   useEffect(() => {
     const fetchBootLoader = async () => {

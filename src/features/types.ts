@@ -51,12 +51,17 @@ export interface DETAIL_ID {
     id: string;
 }
 
-
 export interface ADD_CART {
     cartUserPost: string;
     cartUserProfile: string;
+    post: string;
+    profile: string;
 }
 
 export interface CART_USER_PROFILE_ID {
     cartUserProfile: string;
+}
+
+export interface DELETE_CART {
+    id: string;
 }

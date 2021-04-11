@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect } from "react";
 import { AppDispatch } from "../../app/store";
 import { useSelector, useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
@@ -12,8 +12,15 @@ import Paper from "@material-ui/core/Paper";
 import Header from "../core/Header";
 import { fetchAsyncGetMyProf, selectProfile } from "../user/authSlice";
 import { useHistory, RouteComponentProps } from "react-router-dom";
-import { fetchAsyncGetCartItems, selectCartItems } from "../cart/cartSlice";
+import {
+  fetchAsyncGetCartItems,
+  selectCartItems,
+  fetchAsyncDeleteCartItem,
+} from "../cart/cartSlice";
 import { CART_USER_PROFILE_ID } from "../types";
+import styles from "./Cart.module.css";
+import { Button } from "@material-ui/core";
+import { Formik } from "formik";
 
 const useStyles = makeStyles({
   table: {
@@ -38,10 +45,15 @@ const Cart: React.FC<PageProps> = (props) => {
   //const { count, setCount } = useContext(myProfContext);
 
   const myProfile = useSelector(selectProfile);
-  const cartItems = useSelector(selectCartItems);
+  const allCartItems = useSelector(selectCartItems);
   const classes = useStyles();
   const history = useHistory();
-
+  const filterCartItems = allCartItems.filter((allCartItems) => {
+    return allCartItems.profile.id === myProfile.userProfile;
+  });
+  // const cartItems = cartItems.filter((prof) => {
+  //   return prof.userProfile === userPost;
+  // });
   useEffect(() => {
     const fetchBootLoader = async () => {
       if (localStorage.localJWT) {
@@ -55,7 +67,6 @@ const Cart: React.FC<PageProps> = (props) => {
     };
     fetchBootLoader();
   }, [dispatch]);
-  console.log(cartItems);
   const rows = [
     createData("Frozen yoghurt", 159, 6, 24, 4),
     createData("Ice cream sandwich", 237, 9, 37, 4),
@@ -70,28 +81,77 @@ const Cart: React.FC<PageProps> = (props) => {
         <Table className={classes.table} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>Dessert (100g serving)</TableCell>
-              <TableCell align="right">Calories</TableCell>
-              <TableCell align="right">Fat&nbsp;(g)</TableCell>
-              <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-              <TableCell align="right">Protein&nbsp;(g)</TableCell>
+              <TableCell>Purchase date</TableCell>
+              <TableCell align="left">Product image</TableCell>
+              <TableCell align="left">Product name</TableCell>
+              <TableCell align="left">Price</TableCell>
+              <TableCell align="left">Seller</TableCell>
+              <TableCell align="left">Delete</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
-              <TableRow key={row.name}>
+            {filterCartItems.map((filterCartItem) => (
+              <TableRow key={filterCartItem.id}>
                 <TableCell component="th" scope="row">
-                  {row.name}
+                  {filterCartItem.created_on.substr(0, 10)}
                 </TableCell>
-                <TableCell align="right">{row.calories}</TableCell>
-                <TableCell align="right">{row.fat}</TableCell>
-                <TableCell align="right">{row.carbs}</TableCell>
-                <TableCell align="right">{row.protein}</TableCell>
+                <TableCell align="left">
+                  <img
+                    className={styles.post_image}
+                    src={filterCartItem.post.img}
+                    alt=""
+                  />
+                </TableCell>
+                <TableCell align="left">{filterCartItem.post.title}</TableCell>
+                <TableCell align="left">{filterCartItem.post.price}</TableCell>
+                <TableCell align="left">
+                  {filterCartItem.profile.nickName}
+                </TableCell>
+                <TableCell align="left">
+                  <Formik
+                    //initialValues に遅延処理で取得した値を設定したりするので、フォームの初期値を再設定
+                    enableReinitialize={true}
+                    // initialErrors={{ email: "required" }}
+                    initialValues={{
+                      id: `${filterCartItem.id}`,
+                    }}
+                    onSubmit={async (values) => {
+                      await dispatch(fetchAsyncDeleteCartItem(values));
+                      // ページをリロード
+                      window.location.reload();
+                    }}
+                    // validationSchema={Yup.object().shape({
+                    //   // refで他の欄を参照できます！
+                    //   cartUserPost: Yup.string().test(sameId),
+                    // })}
+                    render={({ handleSubmit, values, isValid }) => (
+                      <>
+                        <input
+                          type="text"
+                          id="cartId"
+                          name="cartId"
+                          hidden={true}
+                        />
+                        <form onSubmit={handleSubmit}>
+                          <br />
+                          <Button
+                            type="submit"
+                            variant="contained"
+                            color="default"
+                          >
+                            Delete
+                          </Button>
+                        </form>
+                      </>
+                    )}
+                  />
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
+      <br />
     </>
   );
 };
