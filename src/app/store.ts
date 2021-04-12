@@ -5,6 +5,7 @@ import signUpReducer from '../features/user/authSlice';
 import postReducer from '../features/post/postSlice';
 import authReducer from '../features/user/authSlice';
 import cartReducer from '../features/cart/cartSlice';
+import purchaseReducer from '../features/purchase/purchaseSlice';
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
     post: postReducer,
     auth: authReducer,
     cart: cartReducer,
+    purchase: purchaseReducer,
   },
 });
 

@@ -65,3 +65,9 @@ export interface CART_USER_PROFILE_ID {
 export interface DELETE_CART {
     id: string;
 }
+
+// export interface PURCHASE {
+//     purchaseinfo: [
+//         id: string
+//     ];
+// }
