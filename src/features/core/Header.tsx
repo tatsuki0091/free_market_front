@@ -9,11 +9,8 @@ import { Button, AppBar, Grid, Avatar, Badge } from "@material-ui/core";
 import styles from "./Core.module.css";
 import { MdAddAPhoto } from "react-icons/md";
 import { withStyles } from "@material-ui/core/styles";
-import {
-  selectPosts,
-  resetOpenNewPost,
-  setOpenNewPost,
-} from "../post/postSlice";
+import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
+import { resetOpenNewPost, setOpenNewPost } from "../post/postSlice";
 import {
   setOpenSignIn,
   setOpenSignUp,
@@ -21,7 +18,6 @@ import {
   setOpenProfile,
   selectProfile,
   fetchAsyncGetMyProf,
-  fetchAsyncGetProfs,
 } from "../user/authSlice";
 
 const StyledBadge = withStyles((theme) => ({
@@ -55,7 +51,6 @@ const StyledBadge = withStyles((theme) => ({
 
 const Header: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
-  const posts = useSelector(selectPosts);
   const profile = useSelector(selectProfile);
   useEffect(() => {
     const fetchBootLoader = async () => {
@@ -75,7 +70,9 @@ const Header: React.FC = () => {
       <AppBar color="default" position="static">
         <Grid container alignItems="center" justify="center">
           <Grid item xs={4} md={4} lg={4}>
-            <h1 className={styles.core_title}>free market</h1>
+            <h1 className={styles.core_title}>
+              <Link to={"/"}>free market</Link>
+            </h1>
           </Grid>
           {localStorage.localJWT ? (
             <>
