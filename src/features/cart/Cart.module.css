@@ -1,0 +1,10 @@
+.post_image {
+  width: 50%;
+  height: 240px;
+  object-fit: contain;
+}
+
+.purchase_button {
+  align-items: center;
+  text-align: center;
+}
