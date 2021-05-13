@@ -1,0 +1,9 @@
+.purchase_button {
+  align-items: center;
+  text-align: center;
+}
+
+.validateFont {
+  color: #ff0000;
+  font-weight: bold;
+}

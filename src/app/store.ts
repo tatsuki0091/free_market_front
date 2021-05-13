@@ -6,6 +6,7 @@ import postReducer from '../features/post/postSlice';
 import authReducer from '../features/user/authSlice';
 import cartReducer from '../features/cart/cartSlice';
 import purchaseReducer from '../features/purchase/purchaseSlice';
+import paymentReducer from '../features/payment/paymentSlice';
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     auth: authReducer,
     cart: cartReducer,
     purchase: purchaseReducer,
+    payment: paymentReducer
   },
 });
 

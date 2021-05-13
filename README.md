@@ -58,3 +58,12 @@ npm install axios
 // typescript 用の react-router-dpm だけではうまくいかなかったため普通のやつもインストール
 npm install --save-dev @types/react-router-dom
 npm install react-router-dom --save
+// 決済システムの Stripe をインストール
+npm install stripe --save
+npm install @types/stripe –save-dev
+npm install --save @stripe/react-stripe-js @stripe/stripe-js
+npm i react-stripe-elements
+
+npm install --save @types/stripe-v3
+npm i @stripe/stripe-js
+npm i @stripe/react-stripe-js

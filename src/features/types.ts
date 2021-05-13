@@ -66,6 +66,42 @@ export interface DELETE_CART {
     id: string;
 }
 
+export interface FILTER_CART_ITEMS_FOR_PAYMENT {
+    filterCartItemsForPayment:{
+    id: number;
+    cartUserProfile: {
+        id: number;
+        email: string;
+    };
+    cartUserPost: {
+        id: number;
+        email: string;
+    };
+    post: {
+        id: number;
+        description: string;
+        img: string;
+        price: number;
+        title: string;
+        userPost: number;
+        created_on: string;
+    };
+    profile: {
+        id: number;
+        nickName: string;
+        img: string;
+        postCode: string;
+        address1: string;
+        address2: string;
+        phoneNumber: string;
+        created_on: string;
+    };
+    created_on: string;
+}[]
+
+}
+
+
 // export interface PURCHASE {
 //     purchaseinfo: [
 //         id: string

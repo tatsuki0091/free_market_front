@@ -76,7 +76,7 @@ const Header: React.FC = () => {
           </Grid>
           {localStorage.localJWT ? (
             <>
-              <Grid item xs={4} md={4} lg={4}>
+              <Grid item xs={4} md={4} lg={4} className={styles.post_section}>
                 <div>
                   <button
                     className={styles.core_post_button}
